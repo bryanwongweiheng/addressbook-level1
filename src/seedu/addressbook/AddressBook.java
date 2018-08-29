@@ -23,6 +23,8 @@ import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
 
+import static java.util.stream.Collectors.toSet;
+
 /*
  * NOTE : =============================================================
  * This class header comment below is brief because details of how to
@@ -484,8 +486,9 @@ public class AddressBook {
      */
     private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
+        keywords = convertToLowerCase(keywords);
         for (String[] person : getAllPersonsInAddressBook()) {
-            final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
+            final Set<String> wordsInName = convertToLowerCase(splitByWhitespace(getNameFromPerson(person)));
             if (!Collections.disjoint(wordsInName, keywords)) {
                 matchedPersons.add(person);
             }
@@ -1164,4 +1167,7 @@ public class AddressBook {
         return new ArrayList<>(Arrays.asList(toSplit.trim().split("\\s+")));
     }
 
+    private static Set<String> convertToLowerCase(Collection<String> collection) {
+        return collection.stream().map(String::toLowerCase).collect(toSet());
+    }
 }
